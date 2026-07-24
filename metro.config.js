@@ -26,19 +26,11 @@ const shimAliases = {
     'index.js',
   ),
   '@stores': path.resolve(shimsRoot, 'store.js'),
-  '@react-navigation/native': path.resolve(shimsRoot, 'navigation.js'),
   '@controleonline/ui-common/src/react/components/MessageService': path.resolve(
     shimsRoot,
     'messageService.js',
   ),
   '@controleonline/../../src/styles/branding': path.resolve(shimsRoot, 'branding.js'),
-  'react-native-animatable': path.resolve(shimsRoot, 'animatable.js'),
-  'react-native-safe-area-context': path.resolve(shimsRoot, 'safeAreaContext.js'),
-  'react-native-vector-icons/Feather': path.resolve(
-    shimsRoot,
-    'react-native-vector-icons',
-    'Feather.js',
-  ),
 };
 
 config.useWatchman = false;

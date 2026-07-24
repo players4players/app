@@ -1,102 +1,68 @@
-import React, { useMemo, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import LoginScreen from './LoginScreen';
-import { clearStoredSession, hasStoredSession, readStoredSession } from './lib/session';
+import React, { useEffect, useRef, useState } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { MessageProvider } from '@controleonline/ui-common/src/react/components/MessageService';
+import CheckLogin from '@controleonline/ui-login/src/react/components/CheckLogin';
+import loginRoutes from '@controleonline/ui-login/src/react/router/routes';
+import { api } from '@controleonline/ui-common/src/api';
+import WorkstationScreen from './WorkstationScreen';
+import { clearStoredSession } from './lib/session';
 
-function getSessionName(session) {
-  return String(
-    session?.name ||
-      session?.peopleName ||
-      session?.user ||
-      session?.username ||
-      'Usuario autenticado',
-  );
-}
+const Stack = createNativeStackNavigator();
 
-function HomeScreen({ session, onLogout }) {
-  const sessionName = useMemo(() => getSessionName(session), [session]);
-
-  return (
-    <View style={styles.home}>
-      <View style={styles.panel}>
-        <Text style={styles.kicker}>ForPlayers</Text>
-        <Text style={styles.title}>Login concluido</Text>
-        <Text style={styles.subtitle}>{sessionName}</Text>
-
-        <TouchableOpacity style={styles.logoutButton} onPress={onLogout}>
-          <Text style={styles.logoutText}>Sair</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
-}
+const routeDefinitions = [
+  ...loginRoutes,
+  {
+    name: 'HomePage',
+    component: WorkstationScreen,
+    options: {
+      headerShown: false,
+      title: 'ForPlayers Workstation',
+    },
+  },
+];
 
 export default function App() {
-  const [session, setSession] = useState(() => readStoredSession());
-  const isAuthenticated = hasStoredSession(session);
-
-  const handleAuthenticated = (nextSession) => {
-    setSession(nextSession || readStoredSession());
-  };
+  const navigationRef = useRef(null);
+  const [navigationReady, setNavigationReady] = useState(false);
 
   const handleLogout = () => {
     clearStoredSession();
-    setSession(null);
+    navigationRef.current?.reset({
+      index: 0,
+      routes: [{ name: 'SignInPage' }],
+    });
   };
 
-  if (isAuthenticated) {
-    return <HomeScreen session={session} onLogout={handleLogout} />;
-  }
+  useEffect(() => {
+    global.api = api;
+  }, []);
 
-  return <LoginScreen onAuthenticated={handleAuthenticated} />;
+  return (
+    <MessageProvider>
+      <NavigationContainer
+        ref={navigationRef}
+        onReady={() => setNavigationReady(true)}
+      >
+        {navigationReady ? <CheckLogin /> : null}
+        <Stack.Navigator initialRouteName="HomePage">
+          {routeDefinitions.map((route) => (
+            <Stack.Screen
+              key={route.name}
+              name={route.name}
+              initialParams={route.initialParams}
+              options={route.options}
+            >
+              {(props) => (
+                <route.component
+                  {...props}
+                  onLogout={route.name === 'HomePage' ? handleLogout : undefined}
+                />
+              )}
+            </Stack.Screen>
+          ))}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </MessageProvider>
+  );
 }
-
-const styles = StyleSheet.create({
-  home: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#f6f8fb',
-    padding: 24,
-  },
-  panel: {
-    width: '100%',
-    maxWidth: 420,
-    borderRadius: 8,
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#d8e0ea',
-    padding: 24,
-  },
-  kicker: {
-    color: '#2563eb',
-    fontSize: 13,
-    fontWeight: '800',
-    marginBottom: 8,
-    textTransform: 'uppercase',
-  },
-  title: {
-    color: '#111827',
-    fontSize: 26,
-    fontWeight: '800',
-    marginBottom: 8,
-  },
-  subtitle: {
-    color: '#4b5563',
-    fontSize: 16,
-    marginBottom: 24,
-  },
-  logoutButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 6,
-    backgroundColor: '#111827',
-    minHeight: 44,
-    paddingHorizontal: 18,
-  },
-  logoutText: {
-    color: '#ffffff',
-    fontSize: 15,
-    fontWeight: '700',
-  },
-});
