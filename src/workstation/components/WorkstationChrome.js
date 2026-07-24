@@ -6,23 +6,18 @@ import { styles } from '../styles';
 export default function WorkstationChrome({ children, onLogout, toolbar }) {
   return (
     <View style={styles.window}>
-      <View style={styles.titleBar}>
-        <Text style={styles.titleText}>ForPlayers Workstation [Mock Match]</Text>
-        <View style={styles.windowControls}>
-          <Text style={styles.windowControl}>_</Text>
-          <Text style={styles.windowControl}>[]</Text>
-          <TouchableOpacity onPress={onLogout} style={styles.closeControl}>
-            <Text style={styles.closeControlText}>X</Text>
+      <View style={styles.workspaceHeader}>
+        <View>
+          <Text style={styles.workspaceEyebrow}>ForPlayers</Text>
+          <Text style={styles.workspaceTitle}>Match Workstation</Text>
+        </View>
+
+        <View style={styles.workspaceMeta}>
+          <Text style={styles.zoomBadge}>Compact 88%</Text>
+          <TouchableOpacity onPress={onLogout} style={styles.logoutButton}>
+            <Text style={styles.logoutButtonText}>Logout</Text>
           </TouchableOpacity>
         </View>
-      </View>
-
-      <View style={styles.menuBar}>
-        {['File', 'Edit', 'View', 'Game', 'Cards', 'Tools', 'Help'].map((item) => (
-          <Text key={item} style={styles.menuItem}>
-            {item}
-          </Text>
-        ))}
       </View>
 
       <View style={styles.toolbar}>

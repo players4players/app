@@ -32,46 +32,50 @@ export default function WorkstationScreen({ session, navigation, onLogout }) {
   return (
     <View style={styles.screen}>
       <WorkstationChrome onLogout={handleLogout} toolbar={game.toolbar}>
-        <View style={[styles.mainLayout, isNarrow && styles.mainLayoutNarrow]}>
-          <View style={styles.tablePane}>
-            <PlayerStatusBar
-              opponentLife={game.opponentLife}
-              phases={game.phases}
-              phaseIndex={game.phaseIndex}
-              playerLife={game.playerLife}
-              playerName={playerName}
-              setOpponentLife={game.setOpponentLife}
-              setPhase={game.setPhase}
-              setPlayerLife={game.setPlayerLife}
-            />
+        <View style={styles.zoomViewport}>
+          <View style={styles.zoomContent}>
+            <View style={[styles.mainLayout, isNarrow && styles.mainLayoutNarrow]}>
+              <View style={styles.tablePane}>
+                <PlayerStatusBar
+                  opponentLife={game.opponentLife}
+                  phases={game.phases}
+                  phaseIndex={game.phaseIndex}
+                  playerLife={game.playerLife}
+                  playerName={playerName}
+                  setOpponentLife={game.setOpponentLife}
+                  setPhase={game.setPhase}
+                  setPlayerLife={game.setPlayerLife}
+                />
 
-            <Battlefield
-              compact={isNarrow}
-              game={game}
-              playerName={playerName}
-            />
+                <Battlefield
+                  compact={isNarrow}
+                  game={game}
+                  playerName={playerName}
+                />
 
-            <HandPanel
-              hand={game.hand}
-              selectedCardId={game.selectedCardId}
-              onDiscard={game.moveToGraveyard}
-              onPlay={game.playFromHand}
-              onSelect={game.selectCard}
+                <HandPanel
+                  hand={game.hand}
+                  selectedCardId={game.selectedCardId}
+                  onDiscard={game.moveToGraveyard}
+                  onPlay={game.playFromHand}
+                  onSelect={game.selectCard}
+                />
+              </View>
+
+              <InspectorPanel
+                compact={isNarrow}
+                log={game.log}
+                selectedCard={game.selectedCard}
+              />
+            </View>
+
+            <FooterStatus
+              graveyardCount={game.graveyard.length}
+              handCount={game.hand.length}
+              libraryCount={game.library.length}
             />
           </View>
-
-          <InspectorPanel
-            compact={isNarrow}
-            log={game.log}
-            selectedCard={game.selectedCard}
-          />
         </View>
-
-        <FooterStatus
-          graveyardCount={game.graveyard.length}
-          handCount={game.hand.length}
-          libraryCount={game.library.length}
-        />
       </WorkstationChrome>
     </View>
   );
