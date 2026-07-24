@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "ForPlayers",
+    "slug": "forplayers-app",
+    "version": "1.0.0",
+    "platforms": ["android", "ios", "web"],
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark"
+  }
+}
